@@ -68,6 +68,13 @@ const isInside = (point, square) => {
       : false;
 };
 
+const getCursor = (canvas, event) => {
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  return [x, y];
+}
+
 const renderLoop = () => {
   universe.tick();
   drawGrid();
@@ -80,10 +87,16 @@ drawCells();
 requestAnimationFrame(renderLoop);
 canvas.addEventListener("click", (e) => {
   console.log("canvas click");
-  const pos = {
-    x: e.clientX,
-    y: e.clientY,
-  };
+  const [x, y] = getCursor(canvas, e);
+  console.log(x, y);
+  // Divide cursor coordinates by number of pixels in a square (8) plus
+  // the border width
+  const col = Math.floor(x/9);
+  const row = Math.floor(y/9);
+  console.log(row, col);
+  universe.toggle(row, col);
+  drawGrid();
+  drawCells();
 });
 
 slider.addEventListener("input", () => {
