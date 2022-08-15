@@ -84,6 +84,14 @@ impl Universe {
         self.cells.as_ptr()
     }
 
+    pub fn toggle(&mut self, row: u32, column: u32) {
+        let cell_idx = self.get_index(row, column);
+        self.cells[cell_idx] = match self.cells[cell_idx] {
+            Cell::Dead => Cell::Alive,
+            Cell::Alive => Cell::Dead,
+        };
+    }
+
     pub fn tick(&mut self) {
         let mut next = self.cells.clone();
         for row in 0..self.height {
