@@ -44,4 +44,6 @@ jobs:
           npm run build
           mv ./dist/* ../docs
       - uses: actions/upload-pages-artifact@v1
+        with:
+          path: docs/
       - uses: actions/deploy-pages@v1
