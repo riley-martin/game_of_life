@@ -48,4 +48,4 @@ jobs:
           path: docs/
       - uses: actions/deploy-pages@v1
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
