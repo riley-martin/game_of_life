@@ -43,8 +43,5 @@ jobs:
           cd www && npm install
           npm run build
           mv ./dist/* ../docs
-    env:
-        provider: pages
-        skip-cleanup: true
-        local-dir: docs
-        keep-history: false
+      - uses: actions/upload-pages-artifact@v1
+      - uses: actions/deploy-pages@v1
