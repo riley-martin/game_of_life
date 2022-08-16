@@ -47,3 +47,5 @@ jobs:
         with:
           path: docs/
       - uses: actions/deploy-pages@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
