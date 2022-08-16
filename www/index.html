@@ -15,14 +15,30 @@
         align-items: center;
         justify-content: center;
       }
+      .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .control__buttons {
+        display: flex;
+        flex-direction: row;
+      }
     </style>
   </head>
   <body>
     <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
     <canvas id="life-display"></canvas>
     <br>
-    <label for="speed">Delay:</label>
-    <input type="range" min="0" max="1000" step="10" value="100" name="speed" id="speed-slider">
+    <div class="controls">
+      <label for="speed">Delay:</label>
+      <input type="range" min="0" max="1000" step="10" value="100" name="speed" id="speed-slider">
+      <div class="control__buttons">
+        <button id="pause">Pause</button>
+        <button id="clear">Clear</button>
+      </div>
+    </div>
     <script src="./bootstrap.js"></script>
   </body>
 </html>

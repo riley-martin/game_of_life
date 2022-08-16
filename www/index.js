@@ -16,6 +16,9 @@ canvas.width = (CELL_SIZE + 1) * width + 1;
 const slider = document.querySelector("#speed-slider");
 let speed = slider.value;
 
+const pause = document.querySelector("#pause");
+const clear = document.querySelector("#clear");
+
 const ctx = canvas.getContext("2d");
 
 const drawGrid = () => {
@@ -75,8 +78,10 @@ const getCursor = (canvas, event) => {
   return [x, y];
 }
 
+let paused = false;
+
 const renderLoop = () => {
-  universe.tick();
+  paused ? {} : universe.tick();
   drawGrid();
   drawCells();
   setTimeout(() => requestAnimationFrame(renderLoop), speed);
@@ -86,14 +91,11 @@ drawGrid();
 drawCells();
 requestAnimationFrame(renderLoop);
 canvas.addEventListener("click", (e) => {
-  console.log("canvas click");
   const [x, y] = getCursor(canvas, e);
-  console.log(x, y);
   // Divide cursor coordinates by number of pixels in a square (8) plus
-  // the border width
+  // the border width to find which square was clicked
   const col = Math.floor(x/9);
   const row = Math.floor(y/9);
-  console.log(row, col);
   universe.toggle(row, col);
   drawGrid();
   drawCells();
@@ -102,3 +104,16 @@ canvas.addEventListener("click", (e) => {
 slider.addEventListener("input", () => {
   speed = slider.value;
 });
+
+clear.addEventListener("click", () => {
+  universe.clear();
+  drawGrid();
+  drawCells();
+});
+
+pause.addEventListener("click", () => {
+  paused = !paused;
+  pause.textContent == "Pause" ? pause.textContent = "Play" : pause.textContent = "Pause";
+});
+
+

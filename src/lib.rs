@@ -52,6 +52,10 @@ impl Universe {
         self.cells.as_ptr()
     }
 
+    pub fn clear(&mut self) {
+        self.cells = vec![Cell::Dead; self.width() as usize * self.height() as usize];
+    }
+
     pub fn height(&self) -> u32 {
         self.height
     }
