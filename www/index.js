@@ -6,6 +6,8 @@ const GRID_COLOR = "#cccccc";
 const DEAD_COLOR = "#ffffff";
 const ALIVE_COLOR = "#000000";
 
+const body = document.querySelector("body");
+
 const canvas = document.querySelector("#life-display");
 const universe = Universe.new();
 const width = universe.width();
@@ -105,15 +107,29 @@ slider.addEventListener("input", () => {
   speed = slider.value;
 });
 
-clear.addEventListener("click", () => {
+const clearScrn = () => {
   universe.clear();
   drawGrid();
   drawCells();
-});
+};
 
-pause.addEventListener("click", () => {
+const pausePlay = () => {
   paused = !paused;
   pause.textContent == "Pause" ? pause.textContent = "Play" : pause.textContent = "Pause";
+};
+
+clear.addEventListener("click", clearScrn);
+
+pause.addEventListener("click", pausePlay);
+
+body.addEventListener("keydown", (event) => {
+  if (!event.isComposing) {
+    if (event.key === "c" || event.key === "C") {
+      clearScrn();
+    } else if (event.key === " ") {
+      pausePlay();
+    }
+  }
 });
 
 
