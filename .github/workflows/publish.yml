@@ -15,6 +15,7 @@ on:
 permissions:
   id-token: write
   pages: write
+  contents: read
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -25,7 +26,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
       - name: Install dependencies
@@ -39,9 +41,18 @@ jobs:
       - name: Build
         run: |
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
-          mkdir -p docs
           rm -rf ./docs/*
+          mkdir -p docs
           wasm-pack build
           cd www && npm install
           npm run build
           mv ./dist/* ../docs
+          
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: 'docs'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
