@@ -9,6 +9,7 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+/// A Cell which can be either Dead or Alive
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -17,6 +18,7 @@ pub enum Cell {
     Alive = 1,
 }
 
+/// A Universe for Conway's game of life. This implementation wraps around on the edges
 #[wasm_bindgen]
 pub struct Universe {
     width: u32,
@@ -25,10 +27,13 @@ pub struct Universe {
 }
 
 impl Universe {
+    /// turn two-dimensional index into one-dimensional index
     fn get_index(&self, row: u32, column: u32) -> usize {
         (row * self.width + column) as usize
     }
 
+    /// Get the number of live neighbors a cell has so we know
+    /// whether it should be alive or not in the next generation
     fn live_neighbor_count(&self, row: u32, column: u32) -> u8 {
         let mut count = 0;
         for delta_row in [self.height - 1, 0, 1].iter().cloned() {
@@ -48,18 +53,23 @@ impl Universe {
 
 #[wasm_bindgen]
 impl Universe {
+    /// Access the cells from a pointer. Mostly useful for reading them
+    /// in Javascript.
     pub fn cells(&self) -> *const Cell {
         self.cells.as_ptr()
     }
 
+    /// Clear the screen (sets all the cells to Cell::Dead)
     pub fn clear(&mut self) {
         self.cells = vec![Cell::Dead; self.width() as usize * self.height() as usize];
     }
 
+    /// Get screen height
     pub fn height(&self) -> u32 {
         self.height
     }
 
+    /// Create a new Universe
     pub fn new() -> Universe {
         let width = 64;
         let height = 64;
@@ -80,10 +90,13 @@ impl Universe {
         }
     }
 
+    /// Turn the Universe into a String. Useful for quick demos, but
+    /// using a canvas gives more control
     pub fn render(&self) -> String {
         self.to_string()
     }
 
+    /// Advance the Universe by one generation
     pub fn tick(&mut self) {
         let mut next = self.cells.clone();
         for row in 0..self.height {
@@ -104,6 +117,7 @@ impl Universe {
         self.cells = next;
     }
 
+    /// Toggle the cell at the given index
     pub fn toggle(&mut self, row: u32, column: u32) {
         let cell_idx = self.get_index(row, column);
         self.cells[cell_idx] = match self.cells[cell_idx] {
@@ -112,11 +126,15 @@ impl Universe {
         };
     }
 
+    /// Get screen width
     pub fn width(&self) -> u32 {
         self.width
     }
 }
 
+/// This gives a Display impl for Universe that returns a block of cells.
+/// Could be useful for quick and dirty examples, but on the web a canvas works
+/// much better
 impl fmt::Display for Universe {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for line in self.cells.as_slice().chunks(self.width as usize) {
@@ -124,7 +142,7 @@ impl fmt::Display for Universe {
                 let symbol = if cell == Cell::Dead { '◻' } else { '◼' };
                 write!(f, "{}", symbol)?;
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
         Ok(())
     }
